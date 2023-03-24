@@ -1,0 +1,10 @@
+ARG DOCKER_REGISTRY
+ARG UBUNTU_VERSION
+
+FROM $DOCKER_REGISTRY/ubuntu:$UBUNTU_VERSION
+LABEL maintainer="baili@flomesh.io"
+RUN apt update -y && \
+    apt install -y net-tools binutils dnsutils iputils-ping iproute2 ethtool tcpdump traceroute curl && \
+    apt purge --auto-remove && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*

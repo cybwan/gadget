@@ -1,0 +1,27 @@
+ARG LOCAL_REGISTRY
+ARG CTR_REGISTRY
+ARG GO_VERSION
+
+FROM $LOCAL_REGISTRY/library/golang:$GO_VERSION as gobuild
+
+WORKDIR /dnsserver
+
+ADD go.mod .
+ADD go.sum .
+
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/go/pkg \
+    go mod download
+
+ADD . .
+
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/go/pkg \
+    go build -v -ldflags "-s -w" -o /dist/dnsserver ./cmd/dnsserver
+
+FROM $LOCAL_REGISTRY/ubuntu:20.04
+LABEL maintainer="baili@flomesh.io"
+WORKDIR /
+COPY --from=gobuild /dist/dnsserver dnsserver
+COPY --from=gobuild /dnsserver/cmd/dnsserver/names.json names.json
+CMD /dnsserver

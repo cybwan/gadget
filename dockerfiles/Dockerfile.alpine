@@ -1,0 +1,4 @@
+FROM alpine:latest
+RUN apk add --no-cache iptables tcpdump iproute2 net-tools
+
+LABEL packages="https://pkgs.alpinelinux.org/packages"
