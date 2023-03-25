@@ -20,8 +20,8 @@ var (
 )
 
 func init() {
-	flags.StringVar(&addr, "addr", "127.0.0.1", "addr")
-	flags.Uint16Var(&port, "port", 15053, "port")
+	flags.StringVarP(&addr, "addr", "a", "127.0.0.1", "addr")
+	flags.Uint16VarP(&port, "port", "p", 15053, "port")
 }
 
 func parseFlags() error {
