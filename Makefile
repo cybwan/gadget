@@ -101,7 +101,20 @@ docker-build-gadget-dnsserver:
 	-t $(CTR_REGISTRY)/dnsserver:$(CTR_TAG) \
 	-f dockerfiles/Dockerfile.dnsserver .
 
-GADGET_TARGETS = gadget-alpine gadget-dnsserver
+.PHONY: docker-build-gadget-tcpproxy
+docker-build-gadget-tcpproxy:
+	docker buildx build --builder ${BUILDX} \
+	--platform=$(DOCKER_BUILDX_PLATFORM) -o $(DOCKER_BUILDX_OUTPUT) \
+	--build-arg DOCKER_REGISTRY=$(DOCKER_REGISTRY) \
+	--build-arg CTR_REGISTRY=$(CTR_REGISTRY) \
+	--build-arg LOCAL_REGISTRY=$(LOCAL_REGISTRY) \
+	--build-arg CTR_TAG=$(CTR_TAG) \
+	--build-arg GO_VERSION=$(DOCKER_GO_VERSION) \
+	--build-arg LDFLAGS=$(LDFLAGS) \
+	-t $(CTR_REGISTRY)/tcpproxy:$(CTR_TAG) \
+	-f dockerfiles/Dockerfile.tcpproxy .
+
+GADGET_TARGETS = gadget-ubuntu gadget-alpine gadget-dnsserver gadget-tcpproxy
 DOCKER_GADGET_TARGETS = $(addprefix docker-build-, $(GADGET_TARGETS))
 
 .PHONY: docker-build

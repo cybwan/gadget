@@ -17,11 +17,10 @@ ADD . .
 
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/go/pkg \
-    go build -v -ldflags "-s -w" -o /dist/dnsserver ./cmd/dnsserver
+    go build -v -ldflags "-s -w" -o /dist/tcpproxy ./cmd/tcpproxy
 
 FROM $LOCAL_REGISTRY/ubuntu:20.04
 LABEL maintainer="baili@flomesh.io"
 WORKDIR /
-COPY --from=gobuild /dist/dnsserver dnsserver
-COPY --from=gobuild /src/cmd/dnsserver/names.json names.json
-CMD /dnsserver
+COPY --from=gobuild /dist/tcpproxy tcpproxy
+CMD /tcpproxy
